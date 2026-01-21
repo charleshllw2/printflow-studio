@@ -1,0 +1,14 @@
+{
+  "hero": {
+    "backgroundImage": "/uploads/product-1768876147246-768405466.jpg"
+  },
+  "customizer": {
+    "previewImage": "/uploads/product-1768876027209-724621448.png"
+  },
+  "motion": {
+    "previewImage": null
+  },
+  "quote": {
+    "backgroundImage": null
+  }
+}

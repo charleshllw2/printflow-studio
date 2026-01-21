@@ -1,0 +1,30 @@
+[
+  {
+    "title": "Shirt",
+    "price": 40,
+    "description": "Blue print shirt design ",
+    "image": "/uploads/product-1768850531607-477125006.png",
+    "id": 5
+  },
+  {
+    "title": "Superman Valentines ",
+    "price": 45,
+    "description": "Superman Valentines ",
+    "image": "/uploads/product-1768850766806-442716276.png",
+    "id": 6
+  },
+  {
+    "title": "Basketball Mom",
+    "price": 40,
+    "description": "Basketball Mom",
+    "image": "/uploads/product-1768850855774-804915759.png",
+    "id": 7
+  },
+  {
+    "title": "Power Ranger",
+    "price": 40,
+    "description": "Red Power Ranger",
+    "image": "/uploads/product-1768850936561-275663135.png",
+    "id": 8
+  }
+]
