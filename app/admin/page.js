@@ -5,6 +5,9 @@ import Link from 'next/link';
 import styles from './page.module.css';
 
 export default function Admin() {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [passwordInput, setPasswordInput] = useState('');
+
     const [activeTab, setActiveTab] = useState('products'); // 'products' or 'content'
 
     // Product State
@@ -22,9 +25,22 @@ export default function Admin() {
     const [savingContent, setSavingContent] = useState(false);
 
     useEffect(() => {
-        fetchProducts();
-        fetchContent();
-    }, []);
+        if (isAuthenticated) {
+            fetchProducts();
+            fetchContent();
+        }
+    }, [isAuthenticated]);
+
+    // Auth Logic
+    const handleLogin = (e) => {
+        e.preventDefault();
+        const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+        if (passwordInput === correctPassword) {
+            setIsAuthenticated(true);
+        } else {
+            alert("Incorrect Password");
+        }
+    };
 
     // --- Product Logic ---
     async function fetchProducts() {
@@ -144,6 +160,34 @@ export default function Admin() {
         } finally {
             setSavingContent(false);
         }
+    }
+
+    if (!isAuthenticated) {
+        return (
+            <div className={styles.adminPage}>
+                <div className="container" style={{ maxWidth: '400px', marginTop: '100px' }}>
+                    <div className={styles.card}>
+                        <h2 className={styles.cardTitle}>Admin Access</h2>
+                        <form onSubmit={handleLogin} className={styles.form}>
+                            <div className={styles.inputGroup}>
+                                <label>Password</label>
+                                <input
+                                    type="password"
+                                    value={passwordInput}
+                                    onChange={e => setPasswordInput(e.target.value)}
+                                    className={styles.input}
+                                    placeholder="Enter admin password"
+                                />
+                            </div>
+                            <button type="submit" className={styles.submitBtn}>Login</button>
+                        </form>
+                        <Link href="/" className={styles.backLink} style={{ marginTop: '20px', display: 'block', textAlign: 'center' }}>
+                            <ArrowLeft size={16} /> Back to Store
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
