@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Trash2, Plus, Upload, ArrowLeft, Layout, ShoppingBag, Mail } from 'lucide-react';
+import { Trash2, Plus, Upload, ArrowLeft, Layout, ShoppingBag, Mail, Film } from 'lucide-react';
 import Link from 'next/link';
 import styles from './page.module.css';
 
