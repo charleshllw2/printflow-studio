@@ -8,7 +8,7 @@ export default function Admin() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [passwordInput, setPasswordInput] = useState('');
 
-    const [activeTab, setActiveTab] = useState('products'); // 'products', 'content', or 'quotes'
+    const [activeTab, setActiveTab] = useState('products'); // 'products', 'content', 'quotes', or 'motions'
 
     // Product State
     const [products, setProducts] = useState([]);
@@ -28,11 +28,16 @@ export default function Admin() {
     const [quotes, setQuotes] = useState([]);
     const [loadingQuotes, setLoadingQuotes] = useState(true);
 
+    // Motion State
+    const [motions, setMotions] = useState([]);
+    const [loadingMotions, setLoadingMotions] = useState(true);
+
     useEffect(() => {
         if (isAuthenticated) {
             fetchProducts();
             fetchContent();
             fetchQuotes();
+            fetchMotions();
         }
     }, [isAuthenticated]);
 
@@ -189,6 +194,28 @@ export default function Admin() {
         }
     }
 
+    // --- Motion Logic ---
+    async function fetchMotions() {
+        try {
+            const res = await fetch('/api/motions');
+            const data = await res.json();
+            setMotions(data);
+            setLoadingMotions(false);
+        } catch (e) {
+            console.error("Failed to load motions", e);
+        }
+    }
+
+    async function handleDeleteMotion(id) {
+        if (!confirm("Delete this motion request?")) return;
+        try {
+            await fetch(`/api/motions?id=${id}`, { method: 'DELETE' });
+            fetchMotions();
+        } catch (e) {
+            alert("Failed to delete motion");
+        }
+    }
+
     if (!isAuthenticated) {
         return (
             <div className={styles.adminPage}>
@@ -247,6 +274,12 @@ export default function Admin() {
                             onClick={() => setActiveTab('quotes')}
                         >
                             <Mail size={18} /> Quote Requests
+                        </button>
+                        <button
+                            className={`${styles.tab} ${activeTab === 'motions' ? styles.activeTab : ''}`}
+                            onClick={() => setActiveTab('motions')}
+                        >
+                            <Film size={18} /> Motion Art
                         </button>
                     </div>
                 </header>
@@ -456,6 +489,42 @@ export default function Admin() {
                                 ))}
                                 {quotes.length === 0 && !loadingQuotes && (
                                     <p className={styles.empty}>No quote requests yet.</p>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'motions' && (
+                        <div className={styles.fullWidthCard}>
+                            <div className={styles.headerWithAction}>
+                                <h2 className={styles.cardTitle}>Motion Art Requests ({motions.length})</h2>
+                                <button onClick={fetchMotions} className={styles.refreshBtn}>Refresh</button>
+                            </div>
+                            <div className={styles.motionGrid}>
+                                {loadingMotions ? <p>Loading...</p> : motions.map(m => (
+                                    <div key={m.id} className={styles.motionItem}>
+                                        <div className={styles.motionPreview}>
+                                            <img src={m.imageUrl} alt={m.fileName} />
+                                            <div className={styles.statusBadge}>{m.status}</div>
+                                        </div>
+                                        <div className={styles.motionInfo}>
+                                            <h4>{m.fileName}</h4>
+                                            <span className={styles.dateText}>
+                                                {m.createdAt ? new Date(m.createdAt).toLocaleDateString() : 'Just now'}
+                                            </span>
+                                        </div>
+                                        <div className={styles.motionActions}>
+                                            <a href={m.imageUrl} target="_blank" rel="noreferrer" className={styles.downloadBtn}>
+                                                View Design
+                                            </a>
+                                            <button onClick={() => handleDeleteMotion(m.id)} className={styles.deleteIconBtn}>
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                                {motions.length === 0 && !loadingMotions && (
+                                    <p className={styles.empty}>No motion requests yet.</p>
                                 )}
                             </div>
                         </div>
