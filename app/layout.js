@@ -8,6 +8,8 @@ export const metadata = {
   description: "Redefining custom apparel with expert design and premium Direct-to-Film transfer technology.",
   icons: {
     icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
 };
 
