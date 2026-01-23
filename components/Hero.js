@@ -51,6 +51,9 @@ export default function Hero({ content }) {
                     </p>
 
                     <div className={styles.actions}>
+                        <Link href="/studio" className={styles.secondaryBtn}>
+                            AI Studio
+                        </Link>
                         <Link href="#customizer" className={styles.primaryBtn}>
                             Start Creating
                         </Link>

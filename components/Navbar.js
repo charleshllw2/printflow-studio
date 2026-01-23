@@ -12,10 +12,10 @@ export default function Navbar() {
                 </Link>
 
                 <div className={styles.links}>
+                    <Link href="/studio" className={`${styles.link} ${styles.aiLink}`}>AI Studio</Link>
                     <Link href="#customizer" className={styles.link}>Customizer</Link>
                     <Link href="#motion" className={styles.link}>Motion Art</Link>
                     <Link href="#gallery" className={styles.link}>Gallery</Link>
-                    <Link href="#business" className={styles.link}>Business</Link>
                 </div>
 
                 <div className={styles.actions}>
