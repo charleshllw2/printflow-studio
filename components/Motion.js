@@ -66,7 +66,7 @@ export default function Motion({ content }) {
                     <div className={styles.successState}>
                         <Sparkles size={48} className={styles.successIcon} />
                         <h2>Request Received!</h2>
-                        <p>Our AI (and humans) are working on your motion art. Check back in a few hours or look for an email.</p>
+                        <p>Our expert designers are working on your motion art. Check back in a few hours or look for an email.</p>
                         <button onClick={() => setSubmitted(false)} className={styles.resetBtn}>Upload Another</button>
                     </div>
                 </div>
@@ -86,7 +86,7 @@ export default function Motion({ content }) {
                             </h2>
                             <p className={styles.description}>
                                 Turn your art into mesmerizing videos for social.
-                                Choose your format, and let Veo perfect your vision.
+                                Choose your format, and let our designers perfect your vision.
                             </p>
                         </div>
 
@@ -114,7 +114,7 @@ export default function Motion({ content }) {
                                 onClick={handleGenerate}
                                 disabled={uploading}
                             >
-                                {uploading ? "Uploading..." : "Generate AI Video"}
+                                {uploading ? "Uploading..." : "Request Motion Design"}
                             </button>
                         )}
                     </div>

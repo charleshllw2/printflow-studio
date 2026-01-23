@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Trash2, Plus, Upload, ArrowLeft, Layout, ShoppingBag } from 'lucide-react';
+import { Trash2, Plus, Upload, ArrowLeft, Layout, ShoppingBag, Mail, Film } from 'lucide-react';
 import Link from 'next/link';
 import styles from './page.module.css';
 
@@ -8,7 +8,7 @@ export default function Admin() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [passwordInput, setPasswordInput] = useState('');
 
-    const [activeTab, setActiveTab] = useState('products'); // 'products' or 'content'
+    const [activeTab, setActiveTab] = useState('products'); // 'products', 'content', 'quotes', or 'motions'
 
     // Product State
     const [products, setProducts] = useState([]);
@@ -24,10 +24,20 @@ export default function Admin() {
     const [contentLoading, setContentLoading] = useState(true);
     const [savingContent, setSavingContent] = useState(false);
 
+    // Quote State
+    const [quotes, setQuotes] = useState([]);
+    const [loadingQuotes, setLoadingQuotes] = useState(true);
+
+    // Motion State
+    const [motions, setMotions] = useState([]);
+    const [loadingMotions, setLoadingMotions] = useState(true);
+
     useEffect(() => {
         if (isAuthenticated) {
             fetchProducts();
             fetchContent();
+            fetchQuotes();
+            fetchMotions();
         }
     }, [isAuthenticated]);
 
@@ -162,6 +172,50 @@ export default function Admin() {
         }
     }
 
+    // --- Quote Logic ---
+    async function fetchQuotes() {
+        try {
+            const res = await fetch('/api/quotes');
+            const data = await res.json();
+            setQuotes(data);
+            setLoadingQuotes(false);
+        } catch (e) {
+            console.error("Failed to load quotes", e);
+        }
+    }
+
+    async function handleDeleteQuote(id) {
+        if (!confirm("Are you sure you want to delete this quote request?")) return;
+        try {
+            await fetch(`/api/quotes?id=${id}`, { method: 'DELETE' });
+            fetchQuotes();
+        } catch (e) {
+            alert("Failed to delete quote");
+        }
+    }
+
+    // --- Motion Logic ---
+    async function fetchMotions() {
+        try {
+            const res = await fetch('/api/motions');
+            const data = await res.json();
+            setMotions(data);
+            setLoadingMotions(false);
+        } catch (e) {
+            console.error("Failed to load motions", e);
+        }
+    }
+
+    async function handleDeleteMotion(id) {
+        if (!confirm("Delete this motion request?")) return;
+        try {
+            await fetch(`/api/motions?id=${id}`, { method: 'DELETE' });
+            fetchMotions();
+        } catch (e) {
+            alert("Failed to delete motion");
+        }
+    }
+
     if (!isAuthenticated) {
         return (
             <div className={styles.adminPage}>
@@ -214,6 +268,18 @@ export default function Admin() {
                             onClick={() => setActiveTab('content')}
                         >
                             <Layout size={18} /> Site Content
+                        </button>
+                        <button
+                            className={`${styles.tab} ${activeTab === 'quotes' ? styles.activeTab : ''}`}
+                            onClick={() => setActiveTab('quotes')}
+                        >
+                            <Mail size={18} /> Quote Requests
+                        </button>
+                        <button
+                            className={`${styles.tab} ${activeTab === 'motions' ? styles.activeTab : ''}`}
+                            onClick={() => setActiveTab('motions')}
+                        >
+                            <Film size={18} /> Motion Art
                         </button>
                     </div>
                 </header>
@@ -369,6 +435,98 @@ export default function Admin() {
 
                                 </div>
                             )}
+                        </div>
+                    )}
+
+                    {activeTab === 'quotes' && (
+                        <div className={styles.fullWidthCard}>
+                            <div className={styles.headerWithAction}>
+                                <h2 className={styles.cardTitle}>Quote Requests ({quotes.length})</h2>
+                                <button onClick={fetchQuotes} className={styles.refreshBtn}>Refresh</button>
+                            </div>
+                            <div className={styles.quoteList}>
+                                {loadingQuotes ? <p>Loading...</p> : quotes.map(q => (
+                                    <div key={q.id} className={styles.quoteItem}>
+                                        <div className={styles.quoteHeader}>
+                                            <div className={styles.customerInfo}>
+                                                <h3>{q.name}</h3>
+                                                <span className={styles.emailText}>{q.email}</span>
+                                            </div>
+                                            <div className={styles.quoteBadge}>{q.status || 'new'}</div>
+                                        </div>
+                                        <div className={styles.quoteMain}>
+                                            <div className={styles.quoteDetail}>
+                                                <label>Order</label>
+                                                <span>{q.garment} x {q.quantity}</span>
+                                            </div>
+                                            <div className={styles.quoteDetail}>
+                                                <label>Print</label>
+                                                <span>{q.print}</span>
+                                            </div>
+                                            <div className={styles.quoteDetail}>
+                                                <label>Timeline</label>
+                                                <span>{q.turnaround}</span>
+                                            </div>
+                                            <div className={styles.quoteDetail}>
+                                                <label>Estimate</label>
+                                                <span className={styles.priceHighlight}>${q.totalEstimated?.toFixed(2)}</span>
+                                            </div>
+                                        </div>
+                                        <div className={styles.quoteFooter}>
+                                            <span className={styles.dateText}>
+                                                {q.createdAt ? new Date(q.createdAt).toLocaleDateString() : 'Just now'}
+                                            </span>
+                                            <div className={styles.actions}>
+                                                <a href={`mailto:${q.email}?subject=PrintFlow Quote for ${q.garment}`} className={styles.actionBtn}>
+                                                    Reply via Email
+                                                </a>
+                                                <button onClick={() => handleDeleteQuote(q.id)} className={styles.deleteIconBtn}>
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                {quotes.length === 0 && !loadingQuotes && (
+                                    <p className={styles.empty}>No quote requests yet.</p>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'motions' && (
+                        <div className={styles.fullWidthCard}>
+                            <div className={styles.headerWithAction}>
+                                <h2 className={styles.cardTitle}>Motion Art Requests ({motions.length})</h2>
+                                <button onClick={fetchMotions} className={styles.refreshBtn}>Refresh</button>
+                            </div>
+                            <div className={styles.motionGrid}>
+                                {loadingMotions ? <p>Loading...</p> : motions.map(m => (
+                                    <div key={m.id} className={styles.motionItem}>
+                                        <div className={styles.motionPreview}>
+                                            <img src={m.imageUrl} alt={m.fileName} />
+                                            <div className={styles.statusBadge}>{m.status}</div>
+                                        </div>
+                                        <div className={styles.motionInfo}>
+                                            <h4>{m.fileName}</h4>
+                                            <span className={styles.dateText}>
+                                                {m.createdAt ? new Date(m.createdAt).toLocaleDateString() : 'Just now'}
+                                            </span>
+                                        </div>
+                                        <div className={styles.motionActions}>
+                                            <a href={m.imageUrl} target="_blank" rel="noreferrer" className={styles.downloadBtn}>
+                                                View Design
+                                            </a>
+                                            <button onClick={() => handleDeleteMotion(m.id)} className={styles.deleteIconBtn}>
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                                {motions.length === 0 && !loadingMotions && (
+                                    <p className={styles.empty}>No motion requests yet.</p>
+                                )}
+                            </div>
                         </div>
                     )}
 

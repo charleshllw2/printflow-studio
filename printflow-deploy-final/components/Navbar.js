@@ -13,7 +13,7 @@ export default function Navbar() {
 
                 <div className={styles.links}>
                     <Link href="#customizer" className={styles.link}>Customizer</Link>
-                    <Link href="#motion" className={styles.link}>Voo Motion</Link>
+                    <Link href="#motion" className={styles.link}>Motion Art</Link>
                     <Link href="#gallery" className={styles.link}>Gallery</Link>
                     <Link href="#business" className={styles.link}>Business</Link>
                 </div>

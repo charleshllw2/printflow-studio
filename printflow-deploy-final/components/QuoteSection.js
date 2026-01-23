@@ -1,7 +1,10 @@
 "use client";
 import { useState, useEffect } from 'react';
 import styles from './QuoteSection.module.css';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
+
+import { db } from '../lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function QuoteSection() {
     const [garment, setGarment] = useState(6);
@@ -9,6 +12,12 @@ export default function QuoteSection() {
     const [print, setPrint] = useState(4);
     const [rush, setRush] = useState(0);
     const [total, setTotal] = useState(0);
+
+    // Contact State
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
 
     useEffect(() => {
         calculateQuote();
@@ -20,18 +29,68 @@ export default function QuoteSection() {
             return;
         }
 
-        let subtotal = (Number(garment) + Number(print)) * qty;
+        let garmentPrice = Number(garment);
+        let printPrice = Number(print);
+        let quantity = Number(qty);
+
+        let subtotal = (garmentPrice + printPrice) * quantity;
 
         // Bulk Discounts
-        if (qty >= 10 && qty < 25) subtotal *= 0.9;
-        else if (qty >= 25 && qty < 50) subtotal *= 0.85;
-        else if (qty >= 50) subtotal *= 0.8;
+        if (quantity >= 10 && quantity < 25) subtotal *= 0.9;
+        else if (quantity >= 25 && quantity < 50) subtotal *= 0.85;
+        else if (quantity >= 50) subtotal *= 0.8;
 
         // Rush Fee
         subtotal += subtotal * Number(rush);
 
         setTotal(subtotal);
     };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!name || !email) {
+            alert("Please provide your name and email to proceed.");
+            return;
+        }
+
+        setSubmitting(true);
+        try {
+            await addDoc(collection(db, "quotes"), {
+                name,
+                email,
+                garment: garment == 6 ? 'T-Shirt' : garment == 14 ? 'Hoodie' : garment == 12 ? 'Crewneck' : 'Long Sleeve',
+                quantity: Number(qty),
+                print: print == 4 ? 'Left Chest' : print == 6 ? 'Full Front' : 'Front + Back',
+                turnaround: rush == 0 ? 'Standard' : 'Rush',
+                totalEstimated: total,
+                createdAt: serverTimestamp(),
+                status: 'new'
+            });
+            setSubmitted(true);
+        } catch (error) {
+            console.error("Error submitting quote:", error);
+            alert("Something went wrong. Please try again.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    if (submitted) {
+        return (
+            <section className={styles.section}>
+                <div className="container">
+                    <div className={styles.successCard}>
+                        <Sparkles className={styles.successIcon} />
+                        <h2>Request Received!</h2>
+                        <p>We've received your quote request for ${total.toFixed(2)}. An account manager will reach out to <strong>{email}</strong> within 24 hours.</p>
+                        <button onClick={() => setSubmitted(false)} className={styles.submitBtn}>
+                            Calculate Another
+                        </button>
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className={styles.section}>
@@ -62,7 +121,7 @@ export default function QuoteSection() {
 
                     <div className={styles.formCard}>
                         <h3 className={styles.formTitle}>Instant Quote Calculator</h3>
-                        <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+                        <form className={styles.form} onSubmit={handleSubmit}>
 
                             <div className={styles.row}>
                                 <div className={styles.group}>
@@ -90,48 +149,68 @@ export default function QuoteSection() {
                                 </div>
                             </div>
 
-                            <div className={styles.group}>
-                                <label>Print Location</label>
-                                <select
-                                    className={styles.input}
-                                    value={print}
-                                    onChange={(e) => setPrint(e.target.value)}
-                                >
-                                    <option value="4">Left Chest ($4)</option>
-                                    <option value="6">Full Front ($6)</option>
-                                    <option value="10">Front + Back ($10)</option>
-                                </select>
+                            <div className={styles.row}>
+                                <div className={styles.group}>
+                                    <label>Print Location</label>
+                                    <select
+                                        className={styles.input}
+                                        value={print}
+                                        onChange={(e) => setPrint(e.target.value)}
+                                    >
+                                        <option value="4">Left Chest ($4)</option>
+                                        <option value="6">Full Front ($6)</option>
+                                        <option value="10">Front + Back ($10)</option>
+                                    </select>
+                                </div>
+                                <div className={styles.group}>
+                                    <label>Turnaround Time</label>
+                                    <select
+                                        className={styles.input}
+                                        value={rush}
+                                        onChange={(e) => setRush(e.target.value)}
+                                    >
+                                        <option value="0">Standard (7-10 Days)</option>
+                                        <option value="0.2">Rush (+20%)</option>
+                                    </select>
+                                </div>
                             </div>
 
-                            <div className={styles.group}>
-                                <label>Turnaround Time</label>
-                                <select
-                                    className={styles.input}
-                                    value={rush}
-                                    onChange={(e) => setRush(e.target.value)}
-                                >
-                                    <option value="0">Standard (7-10 Days)</option>
-                                    <option value="0.2">Rush (+20%)</option>
-                                </select>
+                            <div className={styles.divider}></div>
+
+                            <div className={styles.row}>
+                                <div className={styles.group}>
+                                    <label>Your Name</label>
+                                    <input
+                                        type="text"
+                                        className={styles.input}
+                                        placeholder="Full Name"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <div className={styles.group}>
+                                    <label>Email Address</label>
+                                    <input
+                                        type="email"
+                                        className={styles.input}
+                                        placeholder="hello@example.com"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+                                </div>
                             </div>
 
-                            <div className={styles.totalBox} style={{
-                                marginTop: '10px',
-                                padding: '20px',
-                                background: 'rgba(255,255,255,0.05)',
-                                borderRadius: '12px',
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center'
-                            }}>
-                                <span style={{ color: '#888', fontSize: '14px' }}>Estimated Total</span>
-                                <span style={{ fontSize: '32px', fontWeight: '700', color: 'white' }}>
+                            <div className={styles.totalBox}>
+                                <span className={styles.totalLabel}>Estimated Total</span>
+                                <span className={styles.totalAmount}>
                                     ${total.toFixed(2)}
                                 </span>
                             </div>
 
-                            <button type="button" className={styles.submitBtn}>
-                                Proceed with Quote <ArrowRight size={16} />
+                            <button type="submit" className={styles.submitBtn} disabled={submitting}>
+                                {submitting ? "Sending..." : "Request Official Quote"} <ArrowRight size={16} />
                             </button>
                         </form>
                     </div>
@@ -140,3 +219,4 @@ export default function QuoteSection() {
         </section>
     );
 }
+

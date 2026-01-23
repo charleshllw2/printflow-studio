@@ -46,17 +46,13 @@ export default function Hero({ content }) {
                     </h1>
 
                     <p className={styles.subtitle}>
-                        Premium Direct-to-Film (DTF) technology meets AI creativity.
-                        Upload your art, edit with magic, and watch it come to life on museum-quality apparel.
+                        Premium Direct-to-Film (DTF) technology for visionary creators.
+                        Upload your art, work with our experts, and watch it come to life on museum-quality apparel.
                     </p>
 
                     <div className={styles.actions}>
                         <Link href="#customizer" className={styles.primaryBtn}>
                             Start Creating
-                        </Link>
-                        <Link href="/studio" className={styles.secondaryBtn}>
-                            <Play size={16} fill="currentColor" />
-                            AI Motion Studio
                         </Link>
                     </div>
                 </div>

@@ -10,7 +10,7 @@ export default function Footer() {
                     <div className={styles.colBrand}>
                         <h3 className={styles.brandTitle}>PrintFlow Studio</h3>
                         <p className={styles.description}>
-                            Redefining custom apparel with AI-driven design
+                            Redefining custom apparel with expert craftsmanship
                             and premium Direct-to-Film transfer technology.
                             Built for creators, brands, and visionaries.
                         </p>

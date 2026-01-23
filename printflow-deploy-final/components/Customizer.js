@@ -69,7 +69,7 @@ export default function Customizer({ content }) {
                 {/* ... existing header ... */}
                 <div className={styles.header}>
                     <h2 className="title-lg">Design Your Masterpiece</h2>
-                    <p className={styles.subtitle}>Select your canvas, upload your artwork, and let our Gemini AI tools perfect your vision before print.</p>
+                    <p className={styles.subtitle}>Select your canvas, upload your artwork, and let our expert design team perfect your vision before print.</p>
                 </div>
 
                 <div className={styles.layout}>

@@ -5,7 +5,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "PrintFlow Studio | Custom Create",
-  description: "Redefining custom apparel with AI-driven design and premium Direct-to-Film transfer technology.",
+  description: "Redefining custom apparel with expert design and premium Direct-to-Film transfer technology.",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({ children }) {

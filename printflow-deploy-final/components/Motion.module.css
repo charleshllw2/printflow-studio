@@ -87,13 +87,73 @@
     color: #666;
 }
 
-.fileInfo {
+.generateBtn {
+    background: white;
+    color: black;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    margin-top: 16px;
+    width: fit-content;
+}
+
+.generateBtn:hover {
+    transform: scale(1.02);
+    background: #f0f0f0;
+}
+
+.generateBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.successState {
+    text-align: center;
+    padding: 100px 40px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.successIcon {
     color: #4ade80;
-    font-size: 14px;
-    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.successState h2 {
+    font-size: 42px;
+    font-weight: 700;
+}
+
+.successState p {
+    color: #888;
+    font-size: 18px;
+    max-width: 500px;
+    line-height: 1.6;
+}
+
+.resetBtn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.resetBtn:hover {
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .previewArea {

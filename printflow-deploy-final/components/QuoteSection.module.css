@@ -141,6 +141,65 @@
     background: #f0f0f0;
 }
 
+.divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 10px 0;
+}
+
+.totalBox {
+    margin-top: 10px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.totalLabel {
+    color: #888;
+    font-size: 14px;
+}
+
+.totalAmount {
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+}
+
+.successCard {
+    text-align: center;
+    padding: 80px 40px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.successIcon {
+    color: var(--accent-blue);
+    width: 64px;
+    height: 64px;
+    margin-bottom: 8px;
+}
+
+.successCard h2 {
+    font-size: 42px;
+    font-weight: 700;
+}
+
+.successCard p {
+    color: #888;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
 @media (max-width: 900px) {
     .grid {
         grid-template-columns: 1fr;
